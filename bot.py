@@ -13,6 +13,8 @@
 
 import logging
 import asyncio
+import sys
+import os
 
 from telegram import (
     Update,
@@ -99,6 +101,10 @@ def build_start_keyboard() -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton("ℹ️ المساعدة", callback_data="help"),
+        ],
+        [
+            InlineKeyboardButton("🔄 إعادة تشغيل البوت", callback_data="restart_confirm"),
+            InlineKeyboardButton("🛑 إيقاف البوت", callback_data="stop_confirm"),
         ],
     ])
 
@@ -252,6 +258,18 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         elif data == "help":
             await _show_help(callback_query)
+
+        elif data == "stop_confirm":
+            await _show_stop_confirm(callback_query)
+
+        elif data == "stop_execute":
+            await _execute_stop(callback_query)
+
+        elif data == "restart_confirm":
+            await _show_restart_confirm(callback_query)
+
+        elif data == "restart_execute":
+            await _execute_restart(callback_query)
 
         elif data == "noop":
             await callback_query.answer()
@@ -755,6 +773,88 @@ async def _show_help(cq):
         ]),
     )
     await cq.answer()
+
+
+# ────── إيقاف وإعادة تشغيل البوت ──────
+
+
+async def _show_stop_confirm(cq):
+    """عرض تأكيد إيقاف البوت"""
+    text = (
+        "🛑 إيقاف البوت\n\n"
+        "⚠️ هل أنت متأكد؟\n"
+        "سيتم إيقاف البوت والـ Userbot بالكامل.\n"
+        "ستحتاج إعادة تشغيله يدوياً من Termux."
+    )
+
+    buttons = [
+        [
+            InlineKeyboardButton("✅ نعم، أوقف البوت", callback_data="stop_execute"),
+        ],
+        [
+            InlineKeyboardButton("❌ إلغاء", callback_data="back_to_start"),
+        ],
+    ]
+
+    await cq.edit_message_text(text, reply_markup=InlineKeyboardMarkup(buttons))
+    await cq.answer()
+
+
+async def _execute_stop(cq):
+    """تنفيذ إيقاف البوت"""
+    logger.info("🛑 المالك طلب إيقاف البوت من لوحة التحكم")
+
+    await cq.edit_message_text(
+        "🛑 جاري إيقاف البوت...\n"
+        "👋 إلى اللقاء!"
+    )
+    await cq.answer()
+
+    # إيقاف بعد ثانية لإعطاء وقت لإرسال الرسالة
+    await asyncio.sleep(1)
+    logger.info("🛑 تم إيقاف البوت بأمر من المالك")
+    os._exit(0)
+
+
+async def _show_restart_confirm(cq):
+    """عرض تأكيد إعادة تشغيل البوت"""
+    text = (
+        "🔄 إعادة تشغيل البوت\n\n"
+        "⚠️ هل أنت متأكد؟\n"
+        "سيتم إعادة تشغيل البوت والـ Userbot.\n"
+        "قد تستغرق العملية بضع ثوانٍ."
+    )
+
+    buttons = [
+        [
+            InlineKeyboardButton("✅ نعم، أعد التشغيل", callback_data="restart_execute"),
+        ],
+        [
+            InlineKeyboardButton("❌ إلغاء", callback_data="back_to_start"),
+        ],
+    ]
+
+    await cq.edit_message_text(text, reply_markup=InlineKeyboardMarkup(buttons))
+    await cq.answer()
+
+
+async def _execute_restart(cq):
+    """تنفيذ إعادة تشغيل البوت"""
+    logger.info("🔄 المالك طلب إعادة تشغيل البوت من لوحة التحكم")
+
+    await cq.edit_message_text(
+        "🔄 جاري إعادة تشغيل البوت...\n"
+        "⏳ انتظر لحظة..."
+    )
+    await cq.answer()
+
+    # إيقاف بعد ثانية لإعطاء وقت لإرسال الرسالة
+    await asyncio.sleep(1)
+    logger.info("🔄 إعادة تشغيل البوت بأمر من المالك")
+
+    # إعادة تشغيل العملية
+    python = sys.executable
+    os.execv(python, [python] + sys.argv)
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

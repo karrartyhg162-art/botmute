@@ -11,7 +11,7 @@
 - **حذف تلقائي**: رسائل المكتومين تُحذف فوراً عند وصولها
 - **لوحة تحكم**: بوت تيليجرام منفصل لإدارة قوائم الكتم والاستثناءات
 - **إشعارات**: يرسل لك إشعار عند كتم أو إلغاء كتم شخص
-- **إعداد سهل**: يطلب البيانات مرة واحدة فقط ويحفظها
+- **إعداد سهل**: ملف إعدادات نصي بسيط — عدّله بـ `nano` وشغّل
 
 ## 🏗️ بنية المشروع
 
@@ -21,7 +21,7 @@
 | `userbot.py` | اليوزر بوت (Telethon MTProto) — يراقب ويحذف رسائل المكتومين |
 | `bot.py` | بوت التحكم (python-telegram-bot) — لوحة الإدارة |
 | `data_manager.py` | إدارة البيانات وقوائم الكتم |
-| `config.py` | تحميل الإعدادات من `credentials.json` |
+| `config.py` | تحميل الإعدادات من `credentials.conf` |
 
 ## 📋 المتطلبات
 
@@ -43,8 +43,8 @@ cd botmute
 pip install -r requirements.txt
 
 # 3. إعداد البيانات (نسخ القالب وتعديله)
-copy credentials.example.json credentials.json
-notepad credentials.json
+copy credentials.example.conf credentials.conf
+notepad credentials.conf
 
 # 4. تشغيل البوت
 python main.py
@@ -65,8 +65,8 @@ cd botmute
 pip install -r requirements.txt
 
 # 4. إعداد البيانات (نسخ القالب وتعديله)
-cp credentials.example.json credentials.json
-nano credentials.json
+cp credentials.example.conf credentials.conf
+nano credentials.conf
 
 # 5. تشغيل البوت
 python main.py
@@ -78,14 +78,18 @@ python main.py
 git clone https://github.com/karrartyhg162-art/botmute.git
 cd botmute
 pip install -r requirements.txt
-cp credentials.example.json credentials.json
-nano credentials.json
+cp credentials.example.conf credentials.conf
+nano credentials.conf
 python main.py
 ```
 
 ## ⚙️ الإعداد 
 
-افتح ملف `credentials.json` الذي قمنا بإنشائه في الخطوات السابقة، وضع داخله بياناتك بدلاً من البيانات الوهمية:
+انسخ ملف `credentials.example.conf` إلى `credentials.conf` ثم افتحه بـ `nano` وأدخل بياناتك:
+
+```bash
+nano credentials.conf
+```
 
 | البيان | الوصف | من أين تحصل عليه |
 |--------|-------|-----------------|
@@ -94,8 +98,9 @@ python main.py
 | `PHONE_NUMBER` | رقم هاتفك مع كود الدولة | مثال: `+966512345678` |
 | `BOT_TOKEN` | توكن البوت | [@BotFather](https://t.me/BotFather) |
 | `OWNER_ID` | آيدي حسابك | [@userinfobot](https://t.me/userinfobot) |
+| `WHITELIST` | المستثنون (اختياري) | IDs مفصولة بفاصلة |
 
-> 💡 البيانات تُحفظ في `credentials.json` محلياً ولا تُرفع على GitHub.
+> 💡 البيانات تُحفظ في `credentials.conf` محلياً ولا تُرفع على GitHub.
 
 ## 📱 أوامر البوت
 
@@ -122,7 +127,7 @@ pkill -f "python main.py"
 
 - عند أول تشغيل سيطلب **كود التحقق** — ابحث عنه في تطبيق Telegram (رسالة من "Telegram")
 - **لا تحذف** ملفات `.session` — تحتوي على جلسة تسجيل الدخول
-- **لا تشارك** `credentials.json` — يحتوي على بياناتك الحساسة
+- **لا تشارك** `credentials.conf` — يحتوي على بياناتك الحساسة
 - البوت يحذف **فقط** رسائل الأشخاص المكتومين يدوياً
 
 ## 📄 الرخصة
