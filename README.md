@@ -42,7 +42,11 @@ cd botmute
 # 2. تثبيت المكتبات
 pip install -r requirements.txt
 
-# 3. تشغيل البوت (سيطلب البيانات تلقائياً في أول مرة)
+# 3. إعداد البيانات (نسخ القالب وتعديله)
+copy credentials.example.json credentials.json
+notepad credentials.json
+
+# 4. تشغيل البوت
 python main.py
 ```
 
@@ -60,7 +64,11 @@ cd botmute
 # 3. تثبيت المكتبات
 pip install -r requirements.txt
 
-# 4. تشغيل البوت
+# 4. إعداد البيانات (نسخ القالب وتعديله)
+cp credentials.example.json credentials.json
+nano credentials.json
+
+# 5. تشغيل البوت
 python main.py
 ```
 
@@ -70,12 +78,14 @@ python main.py
 git clone https://github.com/karrartyhg162-art/botmute.git
 cd botmute
 pip install -r requirements.txt
+cp credentials.example.json credentials.json
+nano credentials.json
 python main.py
 ```
 
-## ⚙️ الإعداد (مرة واحدة فقط)
+## ⚙️ الإعداد 
 
-عند أول تشغيل، سيطلب منك البيانات التالية ويحفظها تلقائياً:
+افتح ملف `credentials.json` الذي قمنا بإنشائه في الخطوات السابقة، وضع داخله بياناتك بدلاً من البيانات الوهمية:
 
 | البيان | الوصف | من أين تحصل عليه |
 |--------|-------|-----------------|
