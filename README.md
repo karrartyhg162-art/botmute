@@ -37,7 +37,7 @@
 ```powershell
 # 1. استنساخ المشروع
 git clone https://github.com/karrartyhg162-art/botmute.git
-cd botmute/telegram_mute_bot
+cd botmute
 
 # 2. تثبيت المكتبات
 pip install -r requirements.txt
@@ -55,7 +55,7 @@ pkg install python git -y
 
 # 2. استنساخ المشروع
 git clone https://github.com/karrartyhg162-art/botmute.git
-cd botmute/telegram_mute_bot
+cd botmute
 
 # 3. تثبيت المكتبات
 pip install -r requirements.txt
@@ -68,7 +68,7 @@ python main.py
 
 ```bash
 git clone https://github.com/karrartyhg162-art/botmute.git
-cd botmute/telegram_mute_bot
+cd botmute
 pip install -r requirements.txt
 python main.py
 ```
