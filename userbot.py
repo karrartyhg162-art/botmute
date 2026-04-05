@@ -224,31 +224,8 @@ async def handle_private_message(event):
             )
             return
 
-        # ─── أولوية 3: التحقق من القائمة البيضاء ───
-        all_whitelist = list(set(whitelist_dynamic + whitelist_static))
-        if sender_id in all_whitelist:
-            logger.debug(f"   ⬜ المرسل {sender_id} (@{username}) في القائمة البيضاء - لا إجراء")
-            return
-
-        # ─── أولوية 4: مرسل جديد غير معروف → كتم تلقائي ───
-        logger.info(f"   🆕 مرسل جديد {sender_id} → كتم تلقائي + حذف...")
-        data_manager.add_dm_mute(sender_id)
-        deleted = await safe_delete_message(client, message)
-
-        logger.info(
-            f"   ✅ تم كتم المستخدم {sender_id} ({first_name} {last_name}) "
-            f"في الخاص تلقائياً | حذف: {'✅' if deleted else '❌'}"
-        )
-
-        # إرسال إشعار للمالك
-        username_line = f"\n📎 اليوزر: @{username}" if username else ""
-        notification = (
-            f"🔇 كتم تلقائي في الخاص\n"
-            f"👤 الاسم: {first_name} {last_name}\n"
-            f"🆔 الآيدي: {sender_id}"
-            f"{username_line}"
-        )
-        await send_notification(notification)
+        # ─── المرسل غير مكتوم → لا إجراء ───
+        logger.debug(f"   ✅ المرسل {sender_id} (@{username}) غير مكتوم - الرسالة تبقى")
         return
 
     except FloodWaitError as e:
