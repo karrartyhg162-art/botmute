@@ -1,95 +1,120 @@
-# 🤖 Telegram Auto-Mute Bot
+# 🤖 Telegram Mute Bot
 
-بوت كتم تلقائي لتيليجرام — يحذف رسائل الأشخاص المكتومين في الخاص تلقائياً.
+بوت تيليجرام لكتم الأشخاص المزعجين — يحذف رسائلهم تلقائياً في الخاص والمجموعات.
+
+> ⚠️ **يحذف فقط رسائل الأشخاص اللي تكتمهم أنت يدوياً** — لا يكتم أي شخص تلقائياً.
 
 ## ✨ المميزات
 
-- **كتم تلقائي في الخاص**: أي شخص غريب يراسلك يُكتم تلقائياً وتُحذف رسائله
-- **كتم يدوي في الخاص**: أضف أي شخص لقائمة الكتم من لوحة التحكم
+- **كتم يدوي في الخاص**: أضف أي شخص لقائمة الكتم عبر لوحة التحكم (باليوزرنيم أو الآيدي)
 - **كتم في المجموعات**: رد على رسالة شخص واكتب `/mute` لكتمه
-- **لوحة تحكم**: بوت تيليجرام منفصل لإدارة قوائم الكتم
-- **قائمة بيضاء**: استثناء أشخاص من الكتم التلقائي
+- **حذف تلقائي**: رسائل المكتومين تُحذف فوراً عند وصولها
+- **لوحة تحكم**: بوت تيليجرام منفصل لإدارة قوائم الكتم والاستثناءات
+- **إشعارات**: يرسل لك إشعار عند كتم أو إلغاء كتم شخص
+- **إعداد سهل**: يطلب البيانات مرة واحدة فقط ويحفظها
 
-## 🏗️ البنية
+## 🏗️ بنية المشروع
 
 | الملف | الوظيفة |
 |-------|---------|
-| `main.py` | المشغّل الرئيسي |
-| `userbot.py` | اليوزر بوت (Telethon) — يراقب ويحذف الرسائل |
+| `main.py` | المشغّل الرئيسي — يربط كل شيء |
+| `userbot.py` | اليوزر بوت (Telethon MTProto) — يراقب ويحذف رسائل المكتومين |
 | `bot.py` | بوت التحكم (python-telegram-bot) — لوحة الإدارة |
-| `data_manager.py` | إدارة البيانات (data.json) |
-| `config.py` | الإعدادات (لا يُرفع على GitHub) |
+| `data_manager.py` | إدارة البيانات وقوائم الكتم |
+| `config.py` | تحميل الإعدادات من `credentials.json` |
 
-## 📦 التثبيت على Termux (Android)
+## 📋 المتطلبات
 
-```bash
-# 1. تثبيت الحزم الأساسية
-pkg update && pkg upgrade -y
-pkg install python git -y
+- Python 3.9+
+- حساب Telegram شخصي
+- بوت من [@BotFather](https://t.me/BotFather)
+- API_ID و API_HASH من [my.telegram.org](https://my.telegram.org)
 
-# 2. استنساخ المشروع
-git clone https://github.com/frfshtete/botmute.git
-cd botmute
+## 📦 التثبيت
 
-# 3. تثبيت المكتبات
-pip install -r requirements.txt
-
-# 4. إنشاء ملف الإعدادات
-cp config.example.py config.py
-
-# 5. تعديل الإعدادات (أدخل بياناتك)
-nano config.py
-
-# 6. تشغيل البوت
-python main.py
-```
-
-## 🖥️ التشغيل على Windows
+### Windows
 
 ```powershell
 # 1. استنساخ المشروع
-git clone https://github.com/frfshtete/botmute.git
-cd botmute
+git clone https://github.com/karrartyhg162-art/botmute.git
+cd botmute/telegram_mute_bot
 
 # 2. تثبيت المكتبات
 pip install -r requirements.txt
 
-# 3. إنشاء ملف الإعدادات
-copy config.example.py config.py
-
-# 4. تعديل الإعدادات
-notepad config.py
-
-# 5. تشغيل البوت
+# 3. تشغيل البوت (سيطلب البيانات تلقائياً في أول مرة)
 python main.py
 ```
 
-## ⚙️ الإعدادات المطلوبة (config.py)
+### Termux (Android)
 
-| المتغير | الوصف | من أين تحصل عليه |
-|---------|-------|-----------------|
-| `API_ID` | معرّف التطبيق | [my.telegram.org](https://my.telegram.org) |
-| `API_HASH` | مفتاح التطبيق | [my.telegram.org](https://my.telegram.org) |
-| `PHONE_NUMBER` | رقم هاتفك | مثال: `"+966512345678"` |
+```bash
+# 1. تثبيت الحزم
+pkg update && pkg upgrade -y
+pkg install python git -y
+
+# 2. استنساخ المشروع
+git clone https://github.com/karrartyhg162-art/botmute.git
+cd botmute/telegram_mute_bot
+
+# 3. تثبيت المكتبات
+pip install -r requirements.txt
+
+# 4. تشغيل البوت
+python main.py
+```
+
+### Linux
+
+```bash
+git clone https://github.com/karrartyhg162-art/botmute.git
+cd botmute/telegram_mute_bot
+pip install -r requirements.txt
+python main.py
+```
+
+## ⚙️ الإعداد (مرة واحدة فقط)
+
+عند أول تشغيل، سيطلب منك البيانات التالية ويحفظها تلقائياً:
+
+| البيان | الوصف | من أين تحصل عليه |
+|--------|-------|-----------------|
+| `API_ID` | معرّف التطبيق (رقم) | [my.telegram.org](https://my.telegram.org) |
+| `API_HASH` | مفتاح التطبيق (نص) | [my.telegram.org](https://my.telegram.org) |
+| `PHONE_NUMBER` | رقم هاتفك مع كود الدولة | مثال: `+966512345678` |
 | `BOT_TOKEN` | توكن البوت | [@BotFather](https://t.me/BotFather) |
 | `OWNER_ID` | آيدي حسابك | [@userinfobot](https://t.me/userinfobot) |
 
-## 📱 التشغيل في الخلفية على Termux
+> 💡 البيانات تُحفظ في `credentials.json` محلياً ولا تُرفع على GitHub.
+
+## 📱 أوامر البوت
+
+| الأمر | الوظيفة |
+|-------|---------|
+| `/start` | بدء البوت وعرض لوحة التحكم |
+| `/mute` | كتم شخص في المجموعة (رد على رسالته) |
+| `/unmute` | إلغاء كتم شخص في المجموعة (رد على رسالته) |
+
+## 🔄 التشغيل في الخلفية (Termux)
 
 ```bash
-# تشغيل في الخلفية (لا يتوقف عند إغلاق Termux)
+# تشغيل في الخلفية
 nohup python main.py > output.log 2>&1 &
 
-# لمراقبة اللوج
+# مراقبة السجلات
 tail -f output.log
 
-# لإيقاف البوت
+# إيقاف البوت
 pkill -f "python main.py"
 ```
 
 ## ⚠️ ملاحظات مهمة
 
-- عند أول تشغيل سيطلب كود التحقق من تيليجرام (مرة واحدة فقط)
-- لا تحذف ملفات `.session` — تحتوي على جلسة تسجيل الدخول
-- لا ترفع `config.py` على GitHub — يحتوي على بيانات حساسة
-- الكتم اليدوي يتجاوز القائمة البيضاء
+- عند أول تشغيل سيطلب **كود التحقق** — ابحث عنه في تطبيق Telegram (رسالة من "Telegram")
+- **لا تحذف** ملفات `.session` — تحتوي على جلسة تسجيل الدخول
+- **لا تشارك** `credentials.json` — يحتوي على بياناتك الحساسة
+- البوت يحذف **فقط** رسائل الأشخاص المكتومين يدوياً
+
+## 📄 الرخصة
+
+MIT License

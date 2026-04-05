@@ -1,10 +1,10 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # وحدة الـ Userbot - تعمل بحساب Telegram الشخصي عبر Telethon
 # المهام:
-#   1. كتم تلقائي لأي شخص غريب يراسلك في الخاص + حذف رسائله
-#   2. كتم يدوي في الخاص عبر لوحة التحكم + حذف رسائل المكتومين
-#   3. كتم يدوي في المجموعات بأمر /mute + حذف رسائل المكتومين
-#   4. إرسال إشعارات للمالك عبر Bot API
+#   1. حذف رسائل المكتومين يدوياً في الخاص (عبر لوحة التحكم)
+#   2. كتم يدوي في المجموعات بأمر /mute + حذف رسائل المكتومين
+#   3. إرسال إشعارات للمالك عبر Bot API
+#   ⚠️ لا يوجد كتم تلقائي - فقط الأشخاص المكتومين يدوياً تُحذف رسائلهم
 #
 # ⚠️ تم استبدال pyrofork بـ Telethon لأن pyrofork كان يفشل
 #    صامتاً في handle_updates() بسبب ValueError: Peer id invalid
@@ -143,16 +143,16 @@ async def safe_delete_message(client, message) -> bool:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # معالج الرسائل الخاصة الواردة
 # يعمل على كل رسالة خاصة جديدة تصل للحساب
+# يحذف فقط رسائل الأشخاص المكتومين يدوياً عبر البوت
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 async def handle_private_message(event):
     """
     معالجة الرسائل الخاصة الواردة:
-    - إذا المرسل مكتوم يدوياً → حذف رسالته فوراً (أولوية عليا)
-    - إذا المرسل مكتوم تلقائياً → حذف رسالته فوراً
-    - إذا المرسل في القائمة البيضاء → تجاهل
-    - إذا المرسل غريب → كتمه + حذف رسالته + إشعار
+    - إذا المرسل مكتوم يدوياً → حذف رسالته فوراً
+    - إذا المرسل مكتوم (في قائمة الكتم) → حذف رسالته فوراً
+    - غير ذلك → لا إجراء (الرسالة تبقى)
     """
     try:
         message = event.message
@@ -224,34 +224,10 @@ async def handle_private_message(event):
             )
             return
 
-        # ─── أولوية 3: القائمة البيضاء ───
-        if sender_id in whitelist_static or sender_id in whitelist_dynamic:
-            logger.debug(f"   ✅ تجاهل رسالة من المستثنى {sender_id} (قائمة بيضاء)")
-            return
-
-        # ─── الحالة الأخيرة: مرسل جديد (أول رسالة) - كتم تلقائي ───
-        logger.info(f"   🆕 مرسل جديد {sender_id} → كتم تلقائي + حذف...")
-        data_manager.add_dm_mute(sender_id)
-        deleted = await safe_delete_message(client, message)
-
-        # تجهيز بيانات الإشعار
-        username_display = f"@{username}" if username else "بدون يوزر"
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        logger.info(
-            f"   ✅ تم كتم المستخدم {sender_id} ({first_name} {last_name}) في الخاص تلقائياً"
-            f" | حذف: {'✅' if deleted else '❌'}"
-        )
-
-        # إرسال إشعار للمالك عبر البوت
-        notification = (
-            f"🔇 تم كتم في الخاص\n"
-            f"👤 الاسم: {first_name} {last_name}\n"
-            f"🆔 الآيدي: {sender_id}\n"
-            f"📎 اليوزر: {username_display}\n"
-            f"📅 الوقت: {timestamp}"
-        )
-        await send_notification(notification)
+        # ─── الحالة الأخيرة: مرسل عادي غير مكتوم ───
+        # لا نحذف رسائله - نتركها كما هي
+        logger.debug(f"   ✅ مرسل عادي {sender_id} (@{username}) - لا إجراء")
+        return
 
     except FloodWaitError as e:
         logger.warning(f"FloodWait في معالجة الخاص: انتظار {e.seconds} ثانية...")
